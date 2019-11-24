@@ -55,6 +55,16 @@ class Account
      */
     private $allocationType = self::ALLOCATION_COST;
 
+    /**
+     * Allocation of this account in comparison to the entire portfolio.
+     *
+     * For example, if you set an allocation percent of 50%, then this account will make up
+     * 50% of your total portfolio.
+     *
+     * @ORM\Column(type="decimal", precision=6, scale=5)
+     */
+    private $allocationPercent = 0.00;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -92,6 +102,18 @@ class Account
     public function setAllocationType(string $allocationType): self
     {
         $this->allocationType = $allocationType;
+
+        return $this;
+    }
+
+    public function getAllocationPercent(): ?string
+    {
+        return $this->allocationPercent;
+    }
+
+    public function setAllocationPercent(string $allocationPercent): self
+    {
+        $this->allocationPercent = $allocationPercent;
 
         return $this;
     }
