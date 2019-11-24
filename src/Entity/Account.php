@@ -34,6 +34,22 @@ class Account
     private $type;
 
     /**
+     * The type of allocation.
+     *
+     * Accounts can have their assets allocated by either cost or value.
+     *
+     * Cost means that the allocation percent is based on the amount actually
+     * invested in that asset.
+     *
+     * Value means that the allocation percent looks instead at
+     * the current total of the asset vs. the total value of the account.
+     *
+     * For example, imagine you invest $500 each in Stock A and Stock B,
+     * setting a 50% allocation for both. Then stock A rises to $600 and stock B rises to $700.
+     * By a cost allocation, they are still at 50% because you only invested $500 in each.
+     * But by a value allocation, Stock A would be at 46.15% (600/[600+700]),
+     * and Stock B would have an allocation of 53.85% (700/[600+700])
+     *
      * @ORM\Column(type="string", length=5)
      * @Assert\Choice(choices=Account::ALLOCATION_TYPES, message="Choose a valid allocation type")
      */
