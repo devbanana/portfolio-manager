@@ -62,6 +62,12 @@ class Account
      * 50% of your total portfolio.
      *
      * @ORM\Column(type="decimal", precision=6, scale=5)
+     * @Assert\Range(
+     *     min = 0.0,
+     *     max = 1.0,
+     *     notInRangeMessage = "Allocation must be between 0% and 100%.",
+     *     maxMessage = "Percent cannot be over 100%"
+     * )
      */
     private $allocationPercent = 0.00;
 
