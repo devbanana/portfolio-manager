@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accounts{% endblock %}
+
+{% block body %}
+    <h1>Accounts</h1>
+
+    <ul id="accounts">
+        {% for account in accounts %}
+            <li>{{ account.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
