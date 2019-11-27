@@ -93,9 +93,35 @@ class AccountController extends AbstractController
             return $this->redirectToRoute('account');
         }
 
+        $deleteForm = $this->createFormBuilder()
+            ->setAction($this->generateUrl('account_delete', ['id' => $account->getId()]))
+            ->setMethod('DELETE')
+            ->add('submit', SubmitType::class, [
+                'label' => 'Delete',
+                'attr' => [
+                    'onclick' => 'return confirm("Are you sure you want to delete ' . $account->getName() . '? This action cannot be undone.")',
+                ]
+            ])
+            ->getForm();
+
         return $this->render('account/new.html.twig', [
             'form' => $form->createView(),
+            'deleteForm' => $deleteForm->createView(),
             'account' => $account,
         ]);
+    }
+
+    /**
+     * @Route(
+     *     "/accounts/{id}/delete",
+     *     name="account_delete",
+     *     methods={"DELETE"}
+     * )
+     */
+    public function delete(Account $account, EntityManagerInterface $entityManager)
+    {
+        $entityManager->remove($account);
+        $entityManager->flush();
+        return $this->redirectToRoute('account');
     }
 }

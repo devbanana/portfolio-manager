@@ -1,9 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Add Account{% endblock %}
+{% block title %}{% if account is defined %}Edit {{ account.name }}{% else %}Add Account{% endif %}{% endblock %}
 
 {% block body %}
-    <h1>Add Account</h1>
+    <h1>{% if account is defined %}Edit {{ account.name }}{% else %}Add Account{% endif %}</h1>
 
     {{ form(form) }}
+
+    {% if account is defined %}
+    {{ form(deleteForm) }}
+    {% endif %}
 {% endblock %}

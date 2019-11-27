@@ -140,4 +140,36 @@ class AccountControllerTest extends WebTestCase
         $form = $this->getEditAccountForm($client, $link, $data);
         $this->assertEquals($data['allocationPercent'], $form['account[allocationPercent]']->getValue());
     }
+
+    public function testDeleteAccount()
+    {
+        $client = static::createClient();
+        // Add account first.
+        $form = $this->getAddAccountForm($client);
+        $data = [
+            'name' => 'Active Investing',
+            'type' => 2,
+            'allocationType' => 'value',
+            'allocationPercent' => 50.00,
+        ];
+        $this->fillForm($client, $form, $data);
+        $crawler = $client->followRedirect();
+
+        $links = $crawler->filter('a:contains("' . $data['name'] . '")');
+        $this->assertEquals(1, $links->count());
+        $link = $links->link();
+
+        $crawler = $client->click($link);
+        $links = $crawler->filter('a:contains("Edit")');
+        $this->assertEquals(1, $links->count());
+
+        $crawler = $client->click($links->link());
+
+        $deleteForm = $crawler->selectButton('Delete')->form();
+        $client->submit($deleteForm);
+
+        $crawler = $client->followRedirect();
+        $links = $crawler->filter('a:contains("' . $data['name'] . '")');
+        $this->assertEquals(0, $links->count());
+    }
 }
