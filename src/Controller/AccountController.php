@@ -29,6 +29,16 @@ class AccountController extends AbstractController
     }
 
     /**
+     * @Route("/accounts/{id}", name="account_view", requirements={"id"="\d+"})
+     */
+    public function view(Account $account): Response
+    {
+        return $this->render('account/view.html.twig', [
+            'account' => $account,
+        ]);
+    }
+
+    /**
      * @Route("/accounts/new", name="account_add")
      */
     public function add(Request $request, EntityManagerInterface $entityManager): Response

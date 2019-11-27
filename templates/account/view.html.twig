@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ account.name }}{% endblock %}
+
+{% block body %}
+    <h1>{{ account.name }}</h1>
+    <p><a href="{{ path('account_edit', {id: account.id}) }}">Edit</a></p>
+{% endblock %}
