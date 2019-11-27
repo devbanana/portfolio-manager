@@ -68,4 +68,34 @@ class AccountController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/accounts/{id}/edit", name="account_edit")
+     */
+    public function edit(Account $account, Request $request, EntityManagerInterface $entityManager)
+    {
+        $form = $this->get('form.factory')
+            ->createBuilder(AccountType::class, $account)
+            ->add('submit', SubmitType::class, [
+                'label' => 'Save',
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash(
+                'notice',
+                $account->getName() . ' has been modified.'
+            );
+            return $this->redirectToRoute('account');
+        }
+
+        return $this->render('account/new.html.twig', [
+            'form' => $form->createView(),
+            'account' => $account,
+        ]);
+    }
 }
