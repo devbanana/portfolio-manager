@@ -59,12 +59,13 @@ class AccountControllerTest extends WebTestCase
         $this->assertSelectorTextNotContains('ul#accounts li', 'Active Investing');
 
         $form = $this->getAddAccountForm($client);
-        $form['account[name]'] = 'Active Investing';
-        // Select Taxable.
-        $form['account[type]']->select(2);
-        $form['account[allocationType]']->select('value');
-        $form['account[allocationPercent]'] = 50;
-        $client->submit($form);
+        $data = [
+            'name' => 'Active Investing',
+            'type' => 2, // Taxable
+            'allocationType' => 'value',
+            'allocationPercent' => 50,
+        ];
+        $this->fillForm($client, $form, $data);
         $crawler = $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
@@ -76,12 +77,13 @@ class AccountControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $form = $this->getAddAccountForm($client);
-        $form['account[name]'] = 'Active Investing';
-        // Select Taxable.
-        $form['account[type]']->select(2);
-        $form['account[allocationType]']->select('value');
-        $form['account[allocationPercent]'] = -10.0;
-        $crawler = $client->submit($form);
+        $data = [
+            'name' => 'Active Investing',
+            'type' => 2, // Taxable
+            'allocationType' => 'value',
+            'allocationPercent' => -10.0,
+        ];
+        $crawler = $this->fillForm($client, $form, $data);
 
         $this->assertResponseIsSuccessful();
         $this->assertEquals(1, $crawler->filter('ul li:contains("Allocation must be between 0% and 100%.")')->count());
@@ -91,11 +93,13 @@ class AccountControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $form = $this->getAddAccountForm($client);
-        $form['account[name]']->setValue('Active Investing');
-        $form['account[type]']->select(2);
-        $form['account[allocationType]']->select('value');
-        $form['account[allocationPercent]']->setValue(150.00);
-        $crawler = $client->submit($form);
+        $data = [
+            'name' => 'Active Investing',
+            'type' => 2, // Taxable
+            'allocationType' => 'value',
+            'allocationPercent' => 150.00,
+        ];
+        $crawler = $this->fillForm($client, $form, $data);
 
         $this->assertResponseIsSuccessful();
         $this->assertEquals(1, $crawler->filter('ul li:contains("Allocation must be between 0% and 100%.")')->count());
