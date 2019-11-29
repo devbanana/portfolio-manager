@@ -58,7 +58,7 @@ class AccountController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash(
-                'notice',
+                'success',
                 'Account successfully created.'
             );
             return $this->redirectToRoute('account');
@@ -87,7 +87,7 @@ class AccountController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash(
-                'notice',
+                'success',
                 $account->getName() . ' has been modified.'
             );
             return $this->redirectToRoute('account');

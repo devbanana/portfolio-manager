@@ -69,7 +69,7 @@ class AccountControllerTest extends WebTestCase
         $crawler = $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('div.flash-notice', 'Account successfully created.');
+        $this->assertSelectorTextContains('div.alert-success', 'Account successfully created.');
         $this->assertEquals(1, $crawler->filter('ul#accounts li:contains("Active Investing")')->count());
     }
 
@@ -86,7 +86,7 @@ class AccountControllerTest extends WebTestCase
         $crawler = $this->fillForm($client, $form, $data);
 
         $this->assertResponseIsSuccessful();
-        $this->assertEquals(1, $crawler->filter('ul li:contains("Allocation must be between 0% and 100%.")')->count());
+        $this->assertEquals(1, $crawler->filter('span.form-error-message:contains("Allocation must be between 0% and 100%.")')->count());
     }
 
     public function testPercentMoreThan100()
@@ -102,7 +102,7 @@ class AccountControllerTest extends WebTestCase
         $crawler = $this->fillForm($client, $form, $data);
 
         $this->assertResponseIsSuccessful();
-        $this->assertEquals(1, $crawler->filter('ul li:contains("Allocation must be between 0% and 100%.")')->count());
+        $this->assertEquals(1, $crawler->filter('span.form-error-message:contains("Allocation must be between 0% and 100%.")')->count());
     }
 
     public function testEditAccount()
@@ -135,7 +135,7 @@ class AccountControllerTest extends WebTestCase
         $data['allocationPercent'] = 60;
         $this->fillForm($client, $form, $data);
         $client->followRedirect();
-        $this->assertSelectorTextContains('div.flash-notice', $data['name'] . ' has been modified.');
+        $this->assertSelectorTextContains('div.alert-success', $data['name'] . ' has been modified.');
 
         $links = $crawler->filter('a:contains("' . $data['name'] . '")');
         $this->assertEquals(1, $links->count());
