@@ -19,32 +19,24 @@ class AssetClassRepository extends ServiceEntityRepository
         parent::__construct($registry, AssetClass::class);
     }
 
-    // /**
-    //  * @return AssetClass[] Returns an array of AssetClass objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Get all asset classes excluding cash.
+     *
+     * We don't want to return cash because the user can't generally act on it.
+     *
+     * New assets cannot be created with the cash asset class,
+     * so we want to exclude it as an option.
+     *
+     * @return AssetClass[] Returns an array of AssetClass objects
+     */
+    public function findAllExcludingCash(): array
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('ac')
+            ->andWhere('ac.name != :class')
+            ->setParameter('class', 'Cash')
+            ->orderBy('ac.id', 'ASC')
             ->getQuery()
             ->getResult()
         ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?AssetClass
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
