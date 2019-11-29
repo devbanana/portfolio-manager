@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Assets{% endblock %}
+
+{% block body %}
+    <h1>Assets</h1>
+
+    <div class="dropdown">
+        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="add-asset-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Add Asset
+        </a>
+        <div class="dropdown-menu" aria-labelledby="add-asset-button">
+            <h6 class="dropdown-header">Select Asset Class</h6>
+            {% for assetClass in assetClasses %}
+                <a class="dropdown-item" href="{{ path('asset_new', {slug: assetClass.name}) }}">{{ assetClass.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>IsFractional</th>
+                <th>MarketPrice</th>
+                <th>DayChange</th>
+                <th>DayChangePercent</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for asset in assets %}
+            <tr>
+                <td>{{ asset.id }}</td>
+                <td>{{ asset.symbol }}</td>
+                <td>{{ asset.name }}</td>
+                <td>{{ asset.isFractional ? 'Yes' : 'No' }}</td>
+                <td>{{ asset.marketPrice }}</td>
+                <td>{{ asset.dayChange }}</td>
+                <td>{{ asset.dayChangePercent }}</td>
+                <td>
+                    <a href="{{ path('asset_show', {'symbol': asset.symbol}) }}">show</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
