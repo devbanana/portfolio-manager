@@ -86,7 +86,7 @@ class AccountControllerTest extends WebTestCase
         $crawler = $this->fillForm($client, $form, $data);
 
         $this->assertResponseIsSuccessful();
-        $this->assertEquals(1, $crawler->filter('ul li:contains("Allocation must be between 0% and 100%.")')->count());
+        $this->assertEquals(1, $crawler->filter('span.form-error-message:contains("Allocation must be between 0% and 100%.")')->count());
     }
 
     public function testPercentMoreThan100()
@@ -102,7 +102,7 @@ class AccountControllerTest extends WebTestCase
         $crawler = $this->fillForm($client, $form, $data);
 
         $this->assertResponseIsSuccessful();
-        $this->assertEquals(1, $crawler->filter('ul li:contains("Allocation must be between 0% and 100%.")')->count());
+        $this->assertEquals(1, $crawler->filter('span.form-error-message:contains("Allocation must be between 0% and 100%.")')->count());
     }
 
     public function testEditAccount()
