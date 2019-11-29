@@ -28,6 +28,11 @@ class AssetClass
      */
     private $assets;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+     */
+    private $slug;
+
     public function __construct()
     {
         $this->assets = new ArrayCollection();
@@ -84,5 +89,17 @@ class AssetClass
     public function __toString(): string
     {
         return $this->getName();
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(?string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
     }
 }
