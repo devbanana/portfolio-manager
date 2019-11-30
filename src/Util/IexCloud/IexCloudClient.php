@@ -59,6 +59,11 @@ class IexCloudClient
         return new Stock($symbol, $this);
     }
 
+    public function search(string $fragment): Search
+    {
+        return new Search($fragment, $this);
+    }
+
     /**
      * Requests the API endpoint
      *
