@@ -26,4 +26,17 @@ class AssetControllerTest extends WebTestCase
         $this->assertEquals(1, $items->filter(':contains("Commodity")')->count());
         $this->assertEquals(1, $items->filter(':contains("Other")')->count());
     }
+
+    public function testViewAsset()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/assets/AAPL');
+        $this->assertResponseIsSuccessful();
+
+        $this->assertPageTitleContains('Apple, Inc.');
+        $this->assertSelectorTextContains('h1', 'Apple, Inc.');
+        $this->assertEquals(1, $crawler->filter('p:contains("NASDAQ")')->count());
+        $this->assertEquals(1, $crawler->filter('p small:contains("Data provided by")')->count());
+        $this->assertEquals(2, $crawler->filter('a:contains("IEX Cloud")')->count());
+    }
 }
