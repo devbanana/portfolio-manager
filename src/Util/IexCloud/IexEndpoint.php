@@ -12,6 +12,11 @@ abstract class IexEndpoint
     protected $parameters = [];
     protected $client;
 
+    public function __construct(IexCloudClient $client)
+    {
+        $this->client = $client;
+    }
+
     protected function addUrlPart($part): self
     {
         $this->urlParts[] = $part;

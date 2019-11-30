@@ -10,8 +10,8 @@ class Stock extends IexEndpoint
 
     public function __construct(string $symbol, IexCloudClient $client)
     {
+        parent::__construct($client);
         $this->symbol = $symbol;
-        $this->client = $client;
         $this->addUrlPart('stock')
             ->addUrlPart($symbol);
     }
