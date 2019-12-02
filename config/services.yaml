@@ -17,6 +17,12 @@ services:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
+    App\Util\IexCloud\IexCloudClient:
+        arguments:
+            $key: '%env(IEX_KEY)%'
+            $secret: '%env(IEX_SECRET)%'
+            $version: '%env(IEX_VERSION)%'
+
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:

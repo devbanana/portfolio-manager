@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -71,6 +73,17 @@ class Account
      */
     private $allocationPercent = 0.00;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Holding", mappedBy="account", orphanRemoval=true)
+     */
+    private $holdings;
+
+    public function __construct()
+    {
+        $this->assets = new ArrayCollection();
+        $this->holdings = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +133,37 @@ class Account
     public function setAllocationPercent(string $allocationPercent): self
     {
         $this->allocationPercent = $allocationPercent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Holding[]
+     */
+    public function getHoldings(): Collection
+    {
+        return $this->holdings;
+    }
+
+    public function addHolding(Holding $holding): self
+    {
+        if (!$this->holdings->contains($holding)) {
+            $this->holdings[] = $holding;
+            $holding->setAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHolding(Holding $holding): self
+    {
+        if ($this->holdings->contains($holding)) {
+            $this->holdings->removeElement($holding);
+            // set the owning side to null (unless already changed)
+            if ($holding->getAccount() === $this) {
+                $holding->setAccount(null);
+            }
+        }
 
         return $this;
     }
