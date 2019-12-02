@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ quote.companyName }}{% endblock %}
+
+{% block body %}
+    <h1 class="display-1">{{ quote.companyName }}</h1>
+    <p class="h3">{{ quote.primaryExchange }}</p>
+
+    <ul class="list-inline">
+        <li class="list-inline-item"><a href="https://www.zacks.com/stock/quote/{{ quote.symbol }}" target="_blank">View on Zacks</a></li>
+        <li class="list-inline-item"><a href="https://www.sofi.com/wealth/app/stock/{{ quote.symbol }}" target="_blank">View on SoFi Invest</a></li>
+    </ul>
+
+    <h2>Live Stock Data</h2>
+
+    <div class="row">
+        <div class="col-sm-6">{{ quote.latestPrice|format_currency('USD') }} (<a href="https://iexcloud.io"><small>IEX Cloud</small></a>)</div>
+        <div class="col-sm-6">{{ quote.change }} ({{ quote.changePercent|format_percent_number({max_fraction_digit: 2}) }})</div>
+        <div class="col-sm-4 text-right">Updated</div>
+        <div class="col-sm-8">{{ quote.latestUpdate|millidate('l, F j: g:i A T') }}</div>
+        {% if quote.extendedPrice is not null and quote.extendedChange != 0 %}
+            <div class="col-sm-12 h3">Extended Price Data</div>
+            <div class="col-sm-6">{{ quote.extendedPrice|format_currency('USD') }}</div>
+            <div class="col-sm-6">{{ quote.extendedChange }} ({{ quote.extendedChangePercent|format_percent_number({max_fraction_digit: 2}) }})</div>
+            <div class="col-sm-4 text-right">As of</div>
+            <div class="col-sm-8">{{ quote.extendedPriceTime|millidate('l, F j: g:i A T') }}</div>
+        {% endif %}
+    </div>
+
+    <dl class="row">
+        {% if quote.open is not null %}
+            <dt class="col-sm-4">Open</dt>
+            <dd class="col-sm-8">{{ quote.open|format_currency('USD') }}</dd>
+        {% endif %}
+        {% if quote.close is not null %}
+            <dt class="col-sm-4">Close</dt>
+            <dd class="col-sm-8">{{ quote.close|format_currency('USD') }}</dd>
+        {% endif %}
+        {% if quote.low is not null %}
+            <dt class="col-sm-4">Day low</dt>
+            <dd class="col-sm-8">{{ quote.low|format_currency('USD') }}</dd>
+        {% endif %}
+        {% if quote.high is not null %}
+            <dt class="col-sm-4">Day high</dt>
+            <dd class="col-sm-8">{{ quote.high|format_currency('USD') }}</dd>
+        {% endif %}
+        {% if quote.week52Low is not null %}
+            <dt class="col-sm-4">52 week low</dt>
+            <dd class="col-sm-8">{{ quote.week52Low|format_currency('USD') }}</dd>
+        {% endif %}
+        {% if quote.week52High is not null %}
+            <dt class="col-sm-4">52 week high</dt>
+            <dd class="col-sm-8">{{ quote.week52High|format_currency('USD') }}</dd>
+        {% endif %}
+        {% if quote.ytdChange is not null %}
+            <dt class="col-sm-4">YTD change</dt>
+            <dd class="col-sm-8">{{ quote.ytdChange|format_percent_number({fraction_digit: 2}) }}</dd>
+        {% endif %}
+        {% if quote.avgTotalVolume is not null %}
+            <dt class="col-sm-4">Avg. volume</dt>
+            <dd class="col-sm-8">{{ quote.avgTotalVolume|format_large_number }}</dd>
+        {% endif %}
+        {% if quote.marketCap > 0 %}
+            <dt class="col-sm-4">Market cap</dt>
+            <dd class="col-sm-8">{{ quote.marketCap|format_large_number }}</dd>
+        {% endif %}
+        {% if quote.peRatio is not null %}
+            <dt class="col-sm-4">P/E ratio</dt>
+            <dd class="col-sm-8">{{ quote.peRatio }}</dd>
+        {% endif %}
+    </dl>
+
+    <p><small>Data provided by <a href="https://iexcloud.io">IEX Cloud</a></small></p>
+{% endblock %}
