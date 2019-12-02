@@ -9,5 +9,6 @@
 require('../css/app.scss');
 
 const $ = require('jquery');
+import accessibleAutocomplete from 'accessible-autocomplete'
 
 require('bootstrap');
