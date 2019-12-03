@@ -65,9 +65,15 @@ class Asset
      */
     private $accountHoldings;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PortfolioHolding", mappedBy="asset", orphanRemoval=true)
+     */
+    private $portfolioHoldings;
+
     public function __construct()
     {
         $this->accountHoldings = new ArrayCollection();
+        $this->portfolioHoldings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -184,6 +190,37 @@ class Asset
             // set the owning side to null (unless already changed)
             if ($accountHolding->getAsset() === $this) {
                 $accountHolding->setAsset(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PortfolioHolding[]
+     */
+    public function getPortfolioHoldings(): Collection
+    {
+        return $this->portfolioHoldings;
+    }
+
+    public function addPortfolioHolding(PortfolioHolding $portfolioHolding): self
+    {
+        if (!$this->portfolioHoldings->contains($portfolioHolding)) {
+            $this->portfolioHoldings[] = $portfolioHolding;
+            $portfolioHolding->setAsset($this);
+        }
+
+        return $this;
+    }
+
+    public function removePortfolioHolding(PortfolioHolding $portfolioHolding): self
+    {
+        if ($this->portfolioHoldings->contains($portfolioHolding)) {
+            $this->portfolioHoldings->removeElement($portfolioHolding);
+            // set the owning side to null (unless already changed)
+            if ($portfolioHolding->getAsset() === $this) {
+                $portfolioHolding->setAsset(null);
             }
         }
 
