@@ -34,12 +34,16 @@ class Portfolio
      * @ORM\Column(type="decimal", precision=6, scale=5, nullable=true)
      */
     private $allocationPercent;
-    private $calculatedAllocation;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\PortfolioHolding", mappedBy="portfolio", orphanRemoval=true)
      */
     private $holdings;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $unallocated;
 
     public function __construct()
     {
@@ -78,15 +82,6 @@ class Portfolio
     public function getAllocationPercent(): ?string
     {
         return $this->allocationPercent;
-    }
-
-    public function getCalculatedAllocationPercent(): string
-    {
-        if ($this->getAllocationPercent() === null) {
-            return $this->calculatedAllocation;
-        }
-
-        return $this->getAllocationPercent();
     }
 
     public function setAllocationPercent(?string $allocationPercent): self
@@ -148,29 +143,18 @@ class Portfolio
 
     public function getDrift(string $total): string
     {
-        return bcsub($this->getCurrentAllocationPercent($total), $this->getCalculatedAllocationPercent(), 4);
+        return bcsub($this->getCurrentAllocationPercent($total), $this->getAllocationPercent(), 4);
     }
 
-    /**
-     * @ORM\PostLoad()
-     */
-    public function calculateAllocationPercent(LifecycleEventArgs $args)
+    public function isUnallocated(): ?bool
     {
-        if ($this->getAllocationPercent() !== null) {
-            return;
-        }
+        return $this->unallocated;
+    }
 
-        $result = $args->getEntityManager()->createQueryBuilder()
-            ->select('sum(p.allocationPercent) as percent')
-            ->addSelect('count(p.allocationPercent) as total')
-            ->from('App\Entity\Portfolio', 'p')
-            ->getQuery()
-            ->getSingleResult()
-        ;
+    public function setUnallocated(bool $unallocated): self
+    {
+        $this->unallocated = $unallocated;
 
-        $percent = $result['percent'];
-        $total = $result['total'];
-
-        $this->calculatedAllocation = bcdiv(bcsub(1, $percent, 4), $total, 4);
+        return $this;
     }
 }
