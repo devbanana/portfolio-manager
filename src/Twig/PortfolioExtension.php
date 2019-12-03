@@ -27,6 +27,7 @@ class PortfolioExtension extends AbstractExtension
     public function millidate($value, $format): string
     {
         $date = \DateTime::createFromFormat('U.u', bcdiv($value, 1000, 6));
+        $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         return $date->format($format);
     }
 

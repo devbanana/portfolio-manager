@@ -18,6 +18,7 @@ class PortfolioExtensionTest extends TestCase
     {
         $ts = time();
         $date = new \DateTime("@$ts");
+        $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         $this->assertEquals($date->format('Y-m-d H:i:s'), $this->ext->millidate($ts*1000, 'Y-m-d H:i:s'));
         $this->assertEquals(0, $this->ext->millidate($ts*1000, 'u'));
     }
@@ -27,6 +28,15 @@ class PortfolioExtensionTest extends TestCase
         $ts = microtime(true);
         $micro = sprintf('%06d', bcmul(bcsub($ts, floor($ts), 6), 1000000, 0));
         $this->assertEquals($micro, $this->ext->millidate($ts*1000, 'u'));
+    }
+
+    public function testMillidateWithTimezone()
+    {
+        $tz = date_default_timezone_get();
+        date_default_timezone_set('America/New_York');
+        $ts = time() * 1000;
+        $this->assertEquals('America/New_York', $this->ext->millidate($ts, 'e'));
+        date_default_timezone_set($tz);
     }
 
     public function testFormatLargeNumber()
