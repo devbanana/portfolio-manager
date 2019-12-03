@@ -28,7 +28,7 @@ class Portfolio
     /**
      * @ORM\Column(type="boolean")
      */
-    private $cashReserve;
+    private $cashReserve = false;
 
     /**
      * @ORM\Column(type="decimal", precision=6, scale=5, nullable=true)
