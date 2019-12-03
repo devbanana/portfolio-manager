@@ -61,13 +61,13 @@ class Asset
     private $dayChangePercent;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Holding", mappedBy="asset", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\AccountHolding", mappedBy="asset", orphanRemoval=true)
      */
-    private $holdings;
+    private $accountHoldings;
 
     public function __construct()
     {
-        $this->holdings = new ArrayCollection();
+        $this->accountHoldings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -160,30 +160,30 @@ class Asset
     }
 
     /**
-     * @return Collection|Holding[]
+     * @return Collection|AccountHolding[]
      */
-    public function getHoldings(): Collection
+    public function getAccountHoldings(): Collection
     {
-        return $this->holdings;
+        return $this->accountHoldings;
     }
 
-    public function addHolding(Holding $holding): self
+    public function addAccountHolding(AccountHolding $accountHolding): self
     {
-        if (!$this->holdings->contains($holding)) {
-            $this->holdings[] = $holding;
-            $holding->setAsset($this);
+        if (!$this->accountHoldings->contains($accountHolding)) {
+            $this->accountHoldings[] = $accountHolding;
+            $accountHolding->setAsset($this);
         }
 
         return $this;
     }
 
-    public function removeHolding(Holding $holding): self
+    public function removeAccountHolding(AccountHolding $accountHolding): self
     {
-        if ($this->holdings->contains($holding)) {
-            $this->holdings->removeElement($holding);
+        if ($this->accountHoldings->contains($accountHolding)) {
+            $this->accountHoldings->removeElement($accountHolding);
             // set the owning side to null (unless already changed)
-            if ($holding->getAsset() === $this) {
-                $holding->setAsset(null);
+            if ($accountHolding->getAsset() === $this) {
+                $accountHolding->setAsset(null);
             }
         }
 
