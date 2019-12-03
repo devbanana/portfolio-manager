@@ -5,9 +5,11 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PortfolioRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Portfolio
 {
@@ -32,6 +34,7 @@ class Portfolio
      * @ORM\Column(type="decimal", precision=6, scale=5, nullable=true)
      */
     private $allocationPercent;
+    private $calculatedAllocation;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\PortfolioHolding", mappedBy="portfolio", orphanRemoval=true)
@@ -77,6 +80,15 @@ class Portfolio
         return $this->allocationPercent;
     }
 
+    public function getCalculatedAllocationPercent(): string
+    {
+        if ($this->getAllocationPercent() === null) {
+            return $this->calculatedAllocation;
+        }
+
+        return $this->getAllocationPercent();
+    }
+
     public function setAllocationPercent(?string $allocationPercent): self
     {
         $this->allocationPercent = $allocationPercent;
@@ -113,5 +125,52 @@ class Portfolio
         }
 
         return $this;
+    }
+
+    public function getBalance(): string
+    {
+        $total = '0.00';
+        foreach ($this->getHoldings() as $holding) {
+            $total = bcadd($total, $holding->getTotalValue(), 2);
+        }
+
+        return $total;
+    }
+
+    public function getCurrentAllocationPercent(string $total): string
+    {
+        if (bccomp($total, 0, 4) === 0) {
+            // Avoid division by zero
+            return '0.0000';
+        }
+        return bcdiv($this->getBalance(), $total, 4);
+    }
+
+    public function getDrift(string $total): string
+    {
+        return bcsub($this->getCurrentAllocationPercent($total), $this->getCalculatedAllocationPercent(), 4);
+    }
+
+    /**
+     * @ORM\PostLoad()
+     */
+    public function calculateAllocationPercent(LifecycleEventArgs $args)
+    {
+        if ($this->getAllocationPercent() !== null) {
+            return;
+        }
+
+        $result = $args->getEntityManager()->createQueryBuilder()
+            ->select('sum(p.allocationPercent) as percent')
+            ->addSelect('count(p.allocationPercent) as total')
+            ->from('App\Entity\Portfolio', 'p')
+            ->getQuery()
+            ->getSingleResult()
+        ;
+
+        $percent = $result['percent'];
+        $total = $result['total'];
+
+        $this->calculatedAllocation = bcdiv(bcsub(1, $percent, 4), $total, 4);
     }
 }
