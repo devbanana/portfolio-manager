@@ -19,32 +19,12 @@ class PortfolioHoldingRepository extends ServiceEntityRepository
         parent::__construct($registry, PortfolioHolding::class);
     }
 
-    // /**
-    //  * @return PortfolioHolding[] Returns an array of PortfolioHolding objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getBalance(): string
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('ph')
+            ->select('sum(ph.totalValue)')
             ->getQuery()
-            ->getResult()
+            ->getSingleScalarResult()
         ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?PortfolioHolding
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
