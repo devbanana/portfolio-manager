@@ -18,4 +18,27 @@ class PortfolioRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Portfolio::class);
     }
+
+    public function findUnallocatedPortfolios(?Portfolio $exclude = null): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->where('p.unallocated = true')
+        ;
+
+        if ($exclude) {
+            $qb->andWhere('p.id != ' . $exclude->getId());
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getPercentAllocated(): string
+    {
+        return $this->createQueryBuilder('p')
+            ->select('sum(p.allocationPercent)')
+            ->where('p.unallocated = false')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
 }
