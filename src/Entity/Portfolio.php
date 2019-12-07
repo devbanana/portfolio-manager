@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -21,7 +23,8 @@ class Portfolio
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+     * @Assert\NotBlank
      */
     private $name;
 
@@ -32,6 +35,8 @@ class Portfolio
 
     /**
      * @ORM\Column(type="decimal", precision=6, scale=5, nullable=true)
+     * @Assert\Positive
+     * @Assert\LessThanOrEqual(1, message="Cannot be greater than 100%")
      */
     private $allocationPercent;
 
@@ -156,5 +161,18 @@ class Portfolio
         $this->unallocated = $unallocated;
 
         return $this;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function isAllocationPercentRequired(ExecutionContextInterface $context)
+    {
+        if (!$this->isUnallocated() && empty($this->getAllocationPercent())) {
+            $context->buildViolation('Please enter an allocation percent, or check auto-allocate')
+                ->atPath('allocationPercent')
+                ->addViolation()
+            ;
+        }
     }
 }
