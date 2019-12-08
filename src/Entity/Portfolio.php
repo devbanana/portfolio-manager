@@ -8,10 +8,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PortfolioRepository")
  * @UniqueEntity("name", message="There is already a portfolio by that name.")
+ * @ORM\HasLifecycleCallbacks
  */
 class Portfolio
 {
@@ -27,6 +29,11 @@ class Portfolio
      * @Assert\NotBlank
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+     */
+    private $slug;
 
     /**
      * @ORM\Column(type="boolean")
@@ -68,6 +75,18 @@ class Portfolio
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
@@ -174,5 +193,15 @@ class Portfolio
                 ->addViolation()
             ;
         }
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function slugify()
+    {
+        $slugger = new AsciiSlugger();
+        $this->setSlug((string)$slugger->slug($this->getName()));
     }
 }

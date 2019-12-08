@@ -19,10 +19,10 @@ class PortfolioControllerTest extends WebTestCase
 
         $this->assertSelectorTextContains('h1', 'Your Portfolio');
 
-        $cash = $crawler->filter('th[scope="row"]:contains("Cash Reserve")');
+        $cash = $crawler->filter('th[scope="row"] a[href$="/portfolios/Cash-Reserve"]:contains("Cash Reserve")');
         $this->assertEquals(1, $cash->count());
 
-        $stocks = $crawler->filter('th[scope="row"]:contains("Stocks")');
+        $stocks = $crawler->filter('th[scope="row"] a[href$="Stocks"]:contains("Stocks")');
         $this->assertEquals(1, $stocks->count());
     }
 
@@ -31,7 +31,7 @@ class PortfolioControllerTest extends WebTestCase
         $client = static::createClient();
         $this->form = $this->getAddPortfolioForm($client);
 
-        $this->field('name')->setValue('Test');
+        $this->field('name')->setValue('Stock Advisor');
         $this->field('cashReserve')->untick();
         $this->field('unallocated')->untick();
         $this->field('allocationPercent')->setValue('50.00');
@@ -40,7 +40,7 @@ class PortfolioControllerTest extends WebTestCase
         $crawler = $client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('div.alert-success', 'Portfolio has been created.');
-        $cell = $crawler->filter('th[scope="row"]:contains("Test")');
+        $cell = $crawler->filter('th[scope="row"] a[href$="/portfolios/Stock-Advisor"]:contains("Stock Advisor")');
         $this->assertEquals(1, $cell->count());
     }
 
@@ -130,6 +130,14 @@ class PortfolioControllerTest extends WebTestCase
 
         $error = $crawler->filter('span.form-error-message:contains("Cannot be greater than 100%")');
         $this->assertEquals(1, $error->count());
+    }
+
+    public function testViewPortfolio()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/portfolios/Cash-Reserve');
+        $this->assertResponseIsSuccessful();
+        $this->assertPageTitleContains('Cash Reserve');
     }
 
     private function getAddPortfolioForm(AbstractBrowser $client): Form

@@ -22,7 +22,7 @@
         <tbody>
             {% for portfolio in portfolios %}
                 <tr>
-                    <th scope="row">{{ portfolio.name }}</th>
+                    <th scope="row"><a href="{{ path('portfolio_show', {slug: portfolio.slug}) }}">{{ portfolio.name }}</a></th>
                     <td>{{ portfolio.currentAllocationPercent(balance)|format_percent_number({max_fraction_digit: 3}) }}</td>
                     <td>{{ portfolio.allocationPercent|format_percent_number({max_fraction_digit: 3}) }}</td>
                     <td>{{ portfolio.drift(balance)|format_percent_number({max_fraction_digit: 3}) }}</td>

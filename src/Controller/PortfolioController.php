@@ -54,4 +54,14 @@ class PortfolioController extends AbstractController
             'button_label' => 'Add',
         ]);
     }
+
+    /**
+     * @Route("/portfolios/{slug}", name="portfolio_show", methods={"GET"})
+     */
+    public function show(Portfolio $portfolio): Response
+    {
+        return $this->render('portfolio/show.html.twig', [
+            'portfolio' => $portfolio,
+        ]);
+    }
 }
