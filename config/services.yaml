@@ -23,6 +23,10 @@ services:
             $secret: '%env(IEX_SECRET)%'
             $version: '%env(IEX_VERSION)%'
 
+    App\EventListener\UpdateAllocationSubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber' }
+
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:

@@ -74,7 +74,7 @@ class Account
     private $allocationPercent = 0.00;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Holding", mappedBy="account", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\AccountHolding", mappedBy="account", orphanRemoval=true)
      */
     private $holdings;
 
@@ -138,14 +138,14 @@ class Account
     }
 
     /**
-     * @return Collection|Holding[]
+     * @return Collection|AccountHolding[]
      */
     public function getHoldings(): Collection
     {
         return $this->holdings;
     }
 
-    public function addHolding(Holding $holding): self
+    public function addHolding(AccountHolding $holding): self
     {
         if (!$this->holdings->contains($holding)) {
             $this->holdings[] = $holding;
@@ -155,7 +155,7 @@ class Account
         return $this;
     }
 
-    public function removeHolding(Holding $holding): self
+    public function removeHolding(AccountHolding $holding): self
     {
         if ($this->holdings->contains($holding)) {
             $this->holdings->removeElement($holding);

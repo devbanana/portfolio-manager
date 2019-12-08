@@ -5,9 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\HoldingRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\AccountHoldingRepository")
  */
-class Holding
+class AccountHolding
 {
     /**
      * @ORM\Id()
@@ -17,7 +17,7 @@ class Holding
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Asset", inversedBy="holdings")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Asset", inversedBy="accountHoldings")
      * @ORM\JoinColumn(nullable=false)
      */
     private $asset;

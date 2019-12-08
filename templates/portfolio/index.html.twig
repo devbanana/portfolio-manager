@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Portfolio Manager{% endblock %}
+
+{% block body %}
+    <h1>Your Portfolio</h1>
+
+    <p>Total portfolio balance: {{ balance|format_currency('USD') }}</p>
+
+    <table class="table">
+        <caption>Portfolios</caption>
+        <thead>
+            <tr>
+                <th scope="col">Portfolio</th>
+                <th scope="col">Current Allocation</th>
+                <th scope="col">Target Allocation</th>
+                <th scope="col">Drift</th>
+                <th scope="col">Balance</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for portfolio in portfolios %}
+                <tr>
+                    <th scope="row"><a href="{{ path('portfolio_show', {slug: portfolio.slug}) }}">{{ portfolio.name }}</a></th>
+                    <td>{{ portfolio.currentAllocationPercent(balance)|format_percent_number({max_fraction_digit: 3}) }}</td>
+                    <td>{{ portfolio.allocationPercent|format_percent_number({max_fraction_digit: 3}) }}</td>
+                    <td>{{ portfolio.drift(balance)|format_percent_number({max_fraction_digit: 3}) }}</td>
+                    <td>{{ portfolio.balance|format_currency('USD') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
